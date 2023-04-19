@@ -39,6 +39,8 @@ async: !ruby/object:Api::OpAsync
 docs: !ruby/object:Provider::Terraform::Docs
 autogen_async: true
 import_format: ["projects/{{project}}/locations/{{location}}/certificates/{{name}}"]
+id_format: "projects/{{project}}/locations/{{location}}/certificates/{{name}}"
+schema_version: 1
 examples:
   - !ruby/object:Provider::Terraform::Examples
     name: "certificate_manager_google_managed_certificate"
@@ -60,6 +62,9 @@ examples:
     vars:
       cert_name: "self-managed-cert"
 custom_code: !ruby/object:Provider::Terraform::CustomCode
+  pre_read: templates/terraform/pre_read/certificatemanager_certificate.go.erb
+  post_import: templates/terraform/post_import/certificatemanager_certificate.go.erb
+  post_create: templates/terraform/post_create/certificatemanager_certificate.go.erb
   constants: templates/terraform/constants/cert_manager.erb
 parameters:
   - !ruby/object:Api::Type::String
@@ -71,6 +76,12 @@ parameters:
       A user-defined name of the certificate. Certificate names must be unique
       The name must be 1-64 characters long, and match the regular expression [a-zA-Z][a-zA-Z0-9_-]* which means the first character must be a letter,
       and all following characters must be a dash, underscore, letter or digit.
+  - !ruby/object:Api::Type::String
+      name: 'location'
+      description: |
+        The Certificate Manager location. If not specified, "global" is used.
+      default_value: global
+      url_param_only: true
 properties:
   - !ruby/object:Api::Type::String
     name: 'description'
@@ -93,12 +104,6 @@ properties:
       Currently allowed only for managed certificates.
     default_value: DEFAULT
     diff_suppress_func: 'certManagerDefaultScopeDiffSuppress'
-  - !ruby/object:Api::Type::String
-    name: 'location'
-    description: |
-      The Certificate Manager location. If not specified, "global" is used.
-    default_value: global
-    url_param_only: true
   - !ruby/object:Api::Type::NestedObject
     name: selfManaged
     immutable: true
