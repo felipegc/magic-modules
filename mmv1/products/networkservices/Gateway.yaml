@@ -135,16 +135,6 @@ properties:
     name: 'description'
     description: |
       A free-text description of the resource. Max length 1024 characters.
-  - !ruby/object:Api::Type::Enum
-    name: 'type'
-    required: true
-    immutable: true
-    description: |
-      Immutable. The type of the customer-managed gateway. Possible values are: * OPEN_MESH * SECURE_WEB_GATEWAY.
-    values:
-      - :TYPE_UNSPECIFIED
-      - :OPEN_MESH
-      - :SECURE_WEB_GATEWAY
   - !ruby/object:Api::Type::Array
     name: 'ports'
     required: true
